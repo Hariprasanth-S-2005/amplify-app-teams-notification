@@ -1,2 +1,1 @@
 # amplify-app-teams-notification
-
