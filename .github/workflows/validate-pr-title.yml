@@ -1,0 +1,27 @@
+name: Validate PR Title
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+jobs:
+  validate-title:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate Release Card ID
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+
+          echo "Checking title: $TITLE"
+
+          if [[ ! "$TITLE" =~ Release\ Card\ ID:\ R[0-9]+ ]]; then
+            echo "❌ PR title must contain 'Release Card ID: R<number>'"
+            exit 1
+          fi
+
+          echo "✅ Valid Release Card ID found"
