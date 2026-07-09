@@ -3,7 +3,8 @@ name: Validate PR Title
 on:
   pull_request:
     branches:
-    
+      - main
+      - abc
     types:
       - opened
       - edited
