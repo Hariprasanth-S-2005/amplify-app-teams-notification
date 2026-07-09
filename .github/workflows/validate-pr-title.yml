@@ -1,4 +1,4 @@
-name: Validate PR Title
+name: Validate PR Title 2.0
 
 on:
   pull_request:
@@ -8,20 +8,30 @@ on:
       - synchronize
       - reopened
 
+permissions:
+  contents: read
+
 jobs:
   validate-title:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Validate Release Card ID
+      - name: Validate PR Title Format
+        shell: bash
         run: |
+          set -euo pipefail
+
           TITLE="${{ github.event.pull_request.title }}"
 
-          echo "Checking title: $TITLE"
+          echo "Validating PR title:"
+          echo "$TITLE"
 
-          if [[ ! "$TITLE" =~ Release\ Card\ ID:\ R[0-9]+ ]]; then
-            echo "❌ PR title must contain 'Release Card ID: R<number>'"
+          REGEX='^.+ - Release Card ID: R[0-9]+$'
+
+          if [[ ! "$TITLE" =~ $REGEX ]]; then
+            echo "::error::PR title must follow the format: 'Release Card ID: R<number>'"
+            echo "::error::Example: Release Card ID: R12345"
             exit 1
           fi
 
-          echo "✅ Valid Release Card ID found"
+          echo "✅ PR title validation passed"
