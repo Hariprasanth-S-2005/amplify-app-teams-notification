@@ -1,4 +1,4 @@
-- name: Validate PR Title Format
+  name: Validate PR Title Format
   shell: bash
   run: |
     set -euo pipefail
