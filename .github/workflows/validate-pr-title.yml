@@ -1,37 +1,29 @@
-name: Validate PR Title 2.0
+- name: Validate PR Title Format
+  shell: bash
+  run: |
+    set -euo pipefail
 
-on:
-  pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - reopened
+    TITLE="${{ github.event.pull_request.title }}"
+    BRANCH="${{ github.head_ref }}"
 
-permissions:
-  contents: read
+    echo "PR Branch: $BRANCH"
+    echo "PR Title: $TITLE"
 
-jobs:
-  validate-title:
-    runs-on: ubuntu-latest
+    # Enable case-insensitive regex matching
+    shopt -s nocasematch
 
-    steps:
-      - name: Validate PR Title Format
-        shell: bash
-        run: |
-          set -euo pipefail
+    # Skip validation for any hotfix branch
+    if [[ "$BRANCH" =~ ^hotfix(/|-) ]]; then
+      echo "✅ Hotfix branch detected. Skipping PR title validation."
+      exit 0
+    fi
 
-          TITLE="${{ github.event.pull_request.title }}"
+    REGEX='^.+ - Release Card ID: R[0-9]+$'
 
-          echo "Validating PR title:"
-          echo "$TITLE"
+    if [[ ! "$TITLE" =~ $REGEX ]]; then
+      echo "::error::PR title must follow the format: '<description> - Release Card ID: R<number>'"
+      echo "::error::Example: Fix login issue - Release Card ID: R12345"
+      exit 1
+    fi
 
-          REGEX='^.+ - Release Card ID: R[0-9]+$'
-
-          if [[ ! "$TITLE" =~ $REGEX ]]; then
-            echo "::error::PR title must follow the format: 'Release Card ID: R<number>'"
-            echo "::error::Example: Release Card ID: R12345"
-            exit 1
-          fi
-
-          echo "✅ PR title validation passed"
+    echo "✅ PR title validation passed"
