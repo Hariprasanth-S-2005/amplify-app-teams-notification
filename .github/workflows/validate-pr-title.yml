@@ -33,7 +33,7 @@ jobs:
           BRANCH_LOWER="${BRANCH,,}"
 
           # Skip title validation for hotfix branches
-          if [[ "$BRANCH_LOWER" =~ ^hotfix(/|-) ]]; then
+          if [[ "$BRANCH_LOWER" =~ hotfix ]]; then
             echo "✅ Hotfix branch detected. Skipping PR title validation."
             exit 0
           fi
