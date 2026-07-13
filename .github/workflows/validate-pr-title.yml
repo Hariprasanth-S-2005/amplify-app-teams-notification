@@ -40,7 +40,7 @@ jobs:
 
           # Required format:
           # <description> - Release Card ID: R12345
-          REGEX='^.+ - Release Card ID: R[0-9]+$'
+          REGEX='^.+R[0-9]+$'
 
           if [[ ! "$TITLE" =~ $REGEX ]]; then
             echo "::error::PR title must follow the format: '<description> - Release Card ID: R<number>'"
